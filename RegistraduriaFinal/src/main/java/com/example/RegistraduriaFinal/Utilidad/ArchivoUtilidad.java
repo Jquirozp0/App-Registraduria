@@ -1,11 +1,7 @@
 package com.example.RegistraduriaFinal.Utilidad;
-
 import com.example.RegistraduriaFinal.Entidad.Persona;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-
-import java.io.FileWriter;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
@@ -18,8 +14,10 @@ public class ArchivoUtilidad {
 
     private String primerApellido;
     private String segundoApellido;
+
     public ArchivoUtilidad() {
     }
+
     public void asignarApellidos(int tipo, String apellido1Padre, String apellido2Padre, String apellido1Madre, String apellido2Madre) {
         switch (tipo) {
             case 0:
@@ -36,6 +34,7 @@ public class ArchivoUtilidad {
                 break;
         }
     }
+
     public String asignarTipoDocumento(LocalDate fechaNacimiento) {
         LocalDate hoy = LocalDate.now();
         int edad = Period.between(fechaNacimiento, hoy).getYears();
@@ -47,22 +46,27 @@ public class ArchivoUtilidad {
             return "Cédula de Ciudadanía";
         }
     }
-    public String generarId() {
+    public long generarId() {
         Random rand = new Random();
         StringBuilder sb = new StringBuilder();
+        // Genera 10 dígitos aleatorios
         for (int i = 0; i < 10; i++) {
-            sb.append(rand.nextInt(10));
+            sb.append(rand.nextInt(10)); // Agrega un dígito aleatorio (0-9)
         }
-        String ID = sb.toString();
-        return ID;
+        String idString = sb.toString();
+        // Convierte la cadena a tipo long
+        long id = Long.parseLong(idString);
+        return id;
     }
 
-    public static void generarArchivo(String nombreArchivo, String contenido) {
-        try (FileWriter fileWriter = new FileWriter(nombreArchivo, true)) {
-            fileWriter.write(contenido);
-            System.out.println("Archivo '" + nombreArchivo + "' generado exitosamente.");
-        } catch (IOException e) {
-            e.printStackTrace();
+    public static LocalDate obtenerFecha(String parte) {
+        String[] split = parte.split(":");
+        if (split.length == 2) {
+            String fechaStr = split[1].trim();
+            return LocalDate.parse(fechaStr);
+        } else {
+            System.out.println("Formato incorrecto en la parte: " + parte);
+            return null;
         }
     }
 

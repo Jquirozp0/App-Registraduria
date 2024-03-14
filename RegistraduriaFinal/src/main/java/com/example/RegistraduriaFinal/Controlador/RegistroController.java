@@ -1,50 +1,28 @@
 package com.example.RegistraduriaFinal.Controlador;
+import com.example.RegistraduriaFinal.Dto.PersonaDto;
+import com.example.RegistraduriaFinal.Entidad.Persona;
 import com.example.RegistraduriaFinal.Servicio.RegistroService;
 import com.example.RegistraduriaFinal.Utilidad.ArchivoUtilidad;
-import javax.swing.*;
-import java.awt.*;
-import java.time.LocalDate;
+import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
+@Log4j2
 public class RegistroController {
-    private RegistroService registroService;
-    private ArchivoUtilidad archivoUtilidad;
+  //  private RegistroService registroService;
+  //  private ArchivoUtilidad archivoUtilidad;
+    private static final Logger logger = LogManager.getLogger(RegistroController.class);
+    @Autowired
+    RegistroService reService;
 
-    //constructor
-    public RegistroController() {
-        this.archivoUtilidad = new ArchivoUtilidad();
-        this.registroService = new RegistroService();
+    public void registrarPersona(PersonaDto personaDto) {
+        reService.registrarPersona(personaDto);
     }
 
-    public void ingresarNuevoRegistro(int tipo, String nombre1, String apellido1, String apellido2,
-                                      LocalDate fechaNacimiento, String nombrePadre, String apellido1Padre, String apellido2Padre,
-                                      String nombreMadre, String apellido1Madre, String apellido2Madre) {
-
-        archivoUtilidad.asignarApellidos(tipo, apellido1Padre, apellido2Padre, apellido1Madre, apellido2Madre);
-        String primerApellido = archivoUtilidad.getPrimerApellido();
-        String segundoApellido = archivoUtilidad.getSegundoApellido();
-        String tipoDoc = archivoUtilidad.asignarTipoDocumento(fechaNacimiento);
-        String ID = archivoUtilidad.generarId();
-        registroService.agregarRegistro(ID, nombre1, primerApellido, segundoApellido, fechaNacimiento, tipoDoc, nombrePadre, apellido1Padre, apellido2Padre, nombreMadre, apellido1Madre, apellido2Madre);
-        registroService.generarRegistroArch();
-    }
-    public void consultarRegistros() {
-        String leerRegistro = registroService.leerRegistro("registros.txt");
-        JTextArea textArea = new JTextArea(leerRegistro);
-        textArea.setEditable(false);
-        JScrollPane scrollPane = new JScrollPane(textArea);
-        scrollPane.setPreferredSize(new Dimension(400, 300));
-        JOptionPane.showMessageDialog(null, scrollPane, "Registros", JOptionPane.PLAIN_MESSAGE);
-    }
-    public void modificarRegistros(String ID) {
-
-       registroService.modificarRegistro(ID);
-    }
-    public void eliminarRegistros(String ID) {
-        if (registroService.validarID(ID)) {
-            registroService.eliminarRegistro(ID);
-            JOptionPane.showMessageDialog(null, "Registro eliminado correctamente.");
-        } else {
-            JOptionPane.showMessageDialog(null, "El ID proporcionado no corresponde a ningún registro.");
-        }
+    public List<PersonaDto> obtenerPersona(){
+        logger.info("Verificando ");
+        return reService.obtenerPersona();
     }
 }
